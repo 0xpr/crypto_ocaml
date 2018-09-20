@@ -1,6 +1,8 @@
 This is OCaml code for the book [Implementing SSL/TLS Using Cryptography and PKI](https://www.amazon.com/Implementing-SSL-TLS-Using-Cryptography/dp/0470920416/).
 
-# WARNING
+---
+
+### WARNING
  
 The book's introduction itself says:
 
@@ -11,10 +13,12 @@ Note that my OCaml code has even less error checking than the book -- I skip all
 
 ---
 
-### Ch 01
+### Ch 01 | Understanding Internet Security
 
 - skipped proxy authorization in http client implementation
 - there is some bizzare bug (at the end of the response, duplicate packets seem to be written by the `display result` function.
 - for some reason "www.google.com" doesn't work, there has to be path along with a hostname. This seems to be an issue with how the GET request is being constructed (even the C implementation of the book suffers from this issue).
 
 Since my primary objective is to get a high-level understanding of TLS works, I'm not addressing the above shortcomings.
+
+---
