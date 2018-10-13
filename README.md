@@ -22,3 +22,10 @@ Note that my OCaml code has even less error checking than the book -- I skip all
 Since my primary objective is to get a high-level understanding of TLS works, I'm not addressing the above shortcomings.
 
 ---
+
+### Ch 02 | Protecting Against Eavesdroppers
+
+- skipped 3DES implementation
+- skipped padding (leaving this up to the caller)
+
+---
