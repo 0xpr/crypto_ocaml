@@ -28,4 +28,6 @@ Since my primary objective is to get a high-level understanding of TLS works, I'
 - skipped 3DES implementation
 - skipped padding (leaving this up to the caller)
 
+OCaml doesn't seem to be really suited to writing imperative code, I resorted to using Arrays and for loops extensively in the AES implementation and the code feels rather unnatural.
+
 ---
