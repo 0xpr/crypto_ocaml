@@ -34,3 +34,4 @@ OCaml doesn't seem to be really suited to writing imperative code, I resorted to
 ---
 
 ### Ch 03 | Secure Key Exchange over an Insecure Medium with Public Key Cryptography
+- skipped padding checks for RSA implementation (Somewhat shockingly, my code worked on the first try!)
