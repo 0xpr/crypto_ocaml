@@ -37,7 +37,7 @@ OCaml doesn't seem to be really suited to writing imperative code, I resorted to
 - skipped padding checks for RSA implementation (Somewhat shockingly, my code worked on the first try!)
 - Elliptic Curves for Diffie-Hellman don't seem to be implmented with huge numbers, so I don't think it's going to be used for the library. Perhaps it will come later.
 
-Elliptic Curves are amazing. There are several properties of the cyclic group formed a curve that I'm not fully clear on -- but the math is not particularly complex, elementary group theory is all that is required.
+Elliptic Curves are amazing. There are several properties of the cyclic group formed a curve that I'm not fully clear on -- but the math is not particularly complex, elementary group theory is all that is required. Also I'm using the Zarith library from opam (which itself uses GMP) instead of implementing my own arbitrary precision integer arithmetic library like the book does. I am somewhat baffled by the book's choice to do this though.
 
 ---
 
