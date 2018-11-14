@@ -35,3 +35,10 @@ OCaml doesn't seem to be really suited to writing imperative code, I resorted to
 
 ### Ch 03 | Secure Key Exchange over an Insecure Medium with Public Key Cryptography
 - skipped padding checks for RSA implementation (Somewhat shockingly, my code worked on the first try!)
+- Elliptic Curves for Diffie-Hellman don't seem to be implmented with huge numbers, so I don't think it's going to be used for the library. Perhaps it will come later.
+
+Elliptic Curves are amazing. There are several properties of the cyclic group formed a curve that I'm not fully clear on -- but the math is not particularly complex, elementary group theory is all that is required.
+
+---
+
+### Ch 04 | Authenticating Communications Using Digital Signatures
