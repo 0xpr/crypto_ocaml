@@ -42,3 +42,4 @@ Elliptic Curves are amazing. There are several properties of the cyclic group fo
 ---
 
 ### Ch 04 | Authenticating Communications Using Digital Signatures
+- sha256 initial hash given in the book is in little endian. The book's C implementation converts all the initial hashes to little endian format, but we don't need to this for the OCaml implemntation.
