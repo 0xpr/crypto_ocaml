@@ -1,8 +1,5 @@
-md5: md5.ml
-	ocamlfind ocamlc -package hex -package integers -linkpkg -g -o md5 md5.ml
-
-sha: sha.ml
-	ocamlfind ocamlc -package hex -package integers -linkpkg -g -o sha sha.ml
+digest: digest.ml md5.ml sha.ml
+	ocamlfind ocamlc -package hex -package integers -linkpkg -g -o digest md5.ml sha.ml digest.ml
 
 clean:
-	rm *.cm* md5 sha
+	rm *.cm* digest

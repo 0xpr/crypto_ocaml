@@ -196,7 +196,13 @@ let md5_hash input len hash =
   Byte.set padded_block (md5_block_size - 8) (Char.chr (length_in_bits land 0x000000ff ));
   md5_block_operate padded_block hash
 
+let md5_finalize padded_block length_in_bits =
+  Byte.set padded_block (md5_block_size - 5) (Char.chr ((length_in_bits land 0xff000000 ) lsr 24));
+  Byte.set padded_block (md5_block_size - 6) (Char.chr ((length_in_bits land 0x00ff0000 ) lsr 16));
+  Byte.set padded_block (md5_block_size - 7) (Char.chr ((length_in_bits land 0x0000ff00 ) lsr 8));
+  Byte.set padded_block (md5_block_size - 8) (Char.chr (length_in_bits land 0x000000ff ))
 
+  (*
 let () =
   let input = Sys.argv.(1) in
   let len = String.length input in
@@ -210,3 +216,4 @@ let () =
   let hash = Array.make 4 zero in
   md5_hash (Byte.of_string m_input) input_len hash;
   display_hash hash
+  *)

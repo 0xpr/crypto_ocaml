@@ -53,6 +53,7 @@ let display_hash hash hash_len =
   Byte.print_byte output
 
 let sha1_result_size = 5
+let sha256_result_size = 8
 
 let sha1_block_operate block hash =
   let w = Array.make 80 zero in
@@ -244,8 +245,13 @@ let sha256_hash input len hash =
   Byte.set padded_block (sha_block_size - 1) (Char.chr (length_in_bits land 0x000000ff));
   sha256_block_operate padded_block hash
 
+let sha_finalize padded_block length_in_bits =
+  Byte.set padded_block (sha_block_size - 4) (Char.chr ((length_in_bits land 0xff000000) lsr 24));
+  Byte.set padded_block (sha_block_size - 3) (Char.chr ((length_in_bits land 0x00ff0000) lsr 16));
+  Byte.set padded_block (sha_block_size - 2) (Char.chr ((length_in_bits land 0x0000ff00) lsr 8));
+  Byte.set padded_block (sha_block_size - 1) (Char.chr (length_in_bits land 0x000000ff))
 
-
+(*
 let () =
   let algo = Sys.argv.(1) in
   let input = Sys.argv.(2) in
@@ -268,3 +274,4 @@ let () =
     print_string "sha256 hash: \n";
     display_hash hash256 8
   end
+*)
