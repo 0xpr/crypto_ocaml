@@ -5,14 +5,104 @@ open Unsigned.UInt32
 
 module Byte = struct
   include Bytes
-  let g_ b i = of_int32 (Int32.of_int (Char.code (get b i)))
+  let g_ b i = of_int (Char.code (get b i))
   let s_ b i v black_magic = set b i (Char.chr v)
   let print_byte b =
     let char_seq = Bytes.to_seq b in
-    Printf.printf "0x";
     Seq.iter (fun c -> Printf.printf "%.2x" (Char.code c)) char_seq;
     Printf.printf "\n"
 end
+
+type digest_ctx = {
+  hash : t array;
+  hash_len : int;
+  input_len : int ref;
+  block_operate : bytes -> t array -> unit;
+  block_finalize: bytes -> int -> unit;
+  block: bytes;
+  block_len: int ref
+}
+
+let new_md5_digest : digest_ctx =
+  let hash = Array.make Md5.md5_result_size zero in
+  List.iteri (fun i elem -> hash.(i) <- elem) Md5.md5_initial_hash;
+  {
+    hash = hash;
+    hash_len = 4;
+    input_len = ref 0;
+    block_operate = Md5.md5_block_operate;
+    block_finalize = Md5.md5_finalize;
+    block = Byte.make digest_block_size '\000';
+    block_len = ref 0;
+  }
+
+let new_sha1_digest : digest_ctx =
+  let hash = Array.make Sha.sha1_result_size zero in
+  List.iteri (fun i elem -> hash.(i) <- elem) Sha.sha1_initial_hash;
+  {
+    hash = hash;
+    hash_len = 5;
+    input_len = ref 0;
+    block_operate = Sha.sha1_block_operate;
+    block_finalize = Sha.sha_finalize;
+    block = Byte.make digest_block_size '\000';
+    block_len = ref 0;
+  }
+
+let new_sha256_digest : digest_ctx =
+  let hash = Array.make Sha.sha256_result_size zero in
+  List.iteri (fun i elem -> hash.(i) <- elem) Sha.sha256_initial_hash;
+  {
+    hash = hash;
+    hash_len = 8;
+    input_len = ref 0;
+    block_operate = Sha.sha256_block_operate;
+    block_finalize = Sha.sha_finalize;
+    block = Byte.make digest_block_size '\000';
+    block_len = ref 0;
+  }
+
+let update_digest context input input_len =
+  let ref_in_len = ref input_len in
+  let in_off = ref 0 in
+  context.input_len := !(context.input_len) + !ref_in_len;
+  if !(context.block_len) > 0 then begin
+    let borrow_amt = digest_block_size - !(context.block_len) in
+    if (!ref_in_len < borrow_amt) then begin
+      Byte.blit input !in_off context.block !(context.block_len) !ref_in_len;
+      context.block_len := !(context.block_len) + !ref_in_len;
+      ref_in_len := 0
+    end else begin
+      Byte.blit input !in_off context.block !(context.block_len) borrow_amt;
+      context.block_operate context.block context.hash;
+      context.block_len := 0;
+      in_off := !in_off + borrow_amt;
+      ref_in_len := !ref_in_len - borrow_amt
+    end
+  end;
+  while (!ref_in_len >= digest_block_size) do
+    context.block_operate (Byte.sub input !in_off digest_block_size) context.hash;
+    in_off := !in_off + digest_block_size;
+    ref_in_len := !ref_in_len - digest_block_size
+  done;
+  if (!ref_in_len > 0) then begin
+    Byte.blit input !in_off context.block 0 !ref_in_len;
+    context.block_len := !ref_in_len
+  end;
+  context
+
+let finalize_digest context =
+  Byte.fill context.block !(context.block_len) (digest_block_size - !(context.block_len)) '\000';
+  Byte.set context.block !(context.block_len) (Char.chr 0x80);
+  if !(context.block_len) >= input_block_size then begin
+    context.block_operate context.block context.hash;
+    context.block_len := 0;
+    Byte.fill context.block !(context.block_len) (digest_block_size - !(context.block_len)) '\000';
+  end;
+  context.block_finalize context.block (!(context.input_len) * 8);
+  context.block_operate context.block context.hash;
+  context
+
 
 let digest_hash input len hash block_operate block_finalize =
   let padded_block = Byte.create digest_block_size in
@@ -71,6 +161,32 @@ let display_hash hash hash_len endian =
   done;
   Byte.print_byte output
 
+let buf_size = 1000
+
+let () =
+  let algo = Sys.argv.(1) in
+  let f = open_in_bin Sys.argv.(2) in
+  let buf = Byte.make buf_size '\000' in
+  let context = ref new_md5_digest in
+  if algo = "-sha1" then context := new_sha1_digest
+  else if algo = "-sha256" then context := new_sha256_digest;
+  let bytes_read = ref 0 in
+  bytes_read := input f buf 0 buf_size;
+  while (!bytes_read > 0) do
+    context := update_digest !context buf !bytes_read;
+    bytes_read := input f buf 0 buf_size
+  done;
+  context := finalize_digest !context;
+  close_in f;
+  if algo = "-md5" then
+    display_hash !context.hash Md5.md5_result_size Little
+  else if algo = "-sha1" then
+    display_hash !context.hash Sha.sha1_result_size Big
+  else if algo = "-sha256" then
+    display_hash !context.hash Sha.sha256_result_size Big
+
+
+(*
 let () =
   let algo = Sys.argv.(1) in
   let input = Sys.argv.(2) in
@@ -100,3 +216,4 @@ let () =
   end else begin
     print_string "usage :: ./digest [-sha1 | -sha256 | -md5 ] input"
   end
+*)
