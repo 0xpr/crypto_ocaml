@@ -5,8 +5,8 @@ open Unsigned.UInt32
 
 module Byte = struct
   include Bytes
-  let g_ b i = of_int (Char.code (get b i))
-  let s_ b i v black_magic = set b i (Char.chr v)
+  let g_ b i = Char.code (get b i)
+  let s_ b i v = set b i (Char.chr v)
   let print_byte b =
     let char_seq = Bytes.to_seq b in
     Seq.iter (fun c -> Printf.printf "%.2x" (Char.code c)) char_seq;
@@ -153,14 +153,19 @@ let int32_to_bytes n endian =
   in
   byte
 
-let display_hash hash hash_len endian =
+let hash_to_bytes hash hash_len endian =
   let output = Byte.create (4 * hash_len) in
   for i = 0 to (hash_len - 1) do
     let byte = int32_to_bytes hash.(i) endian in
     Byte.blit byte 0 output (i * 4) 4
   done;
+  output
+
+let display_hash hash hash_len endian =
+  let output = hash_to_bytes hash hash_len endian in
   Byte.print_byte output
 
+(*
 let buf_size = 1000
 
 let () =
@@ -184,6 +189,7 @@ let () =
     display_hash !context.hash Sha.sha1_result_size Big
   else if algo = "-sha256" then
     display_hash !context.hash Sha.sha256_result_size Big
+*)
 
 
 (*
