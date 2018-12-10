@@ -44,3 +44,5 @@ Elliptic Curves are amazing. There are several properties of the cyclic group fo
 ### Ch 04 | Authenticating Communications Using Digital Signatures
 - sha256 initial hash given in the book is in little endian. The book's C implementation converts all the initial hashes to little endian format, but we don't need to this for the OCaml implemntation.
 - finished generic digest routine to compute sha1, md5 and sha256 hashes of entire files.
+- the ECDSA algorithm given in the book has a bug. It does not check if r and s are zeros (mod n). Strangely, it's not even there in the errata. The same bug inflicts the DSA algorithm implementation. Since this is rather unlikely, I haven't bothered to fix the bug in my code. I only noticed it after writing all the code.
+- The implementation of add points and multiply point for elliptic curves is also wrong. It doesn't cover the cases where one point is at infinity, and doesn't handle the addition of a point and its inverse.

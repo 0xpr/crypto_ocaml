@@ -92,6 +92,7 @@ let list_to_z val_list =
   List.iteri (fun i ch -> Byte.set test_byte i (Char.chr ch)) rev_list;
   Z.of_bits (Byte.to_string test_byte)
 
+  (*
 let () =
   let priv = list_to_z priv_list in
   let pub = list_to_z pub_list in
@@ -110,3 +111,4 @@ let () =
   if (dsa_verify params pub !digest.hash !digest.hash_len !signature) then
     print_string "verified ..\n" 
   else print_string "wrong sig ..\n"
+  *)
