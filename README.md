@@ -50,4 +50,8 @@ Elliptic Curves are amazing. There are several properties of the cyclic group fo
 ---
 
 ### Ch 05 | Creating a Network of Trust Using X.509 Certificates
--
+- Comprehended the terrifying madness that is ASN.1. 
+
+--- 
+
+Read the protocol specification, and felt it was pointless coding the protocols as it is mostly glue code. Decided not to continue further.
