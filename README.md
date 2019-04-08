@@ -3,13 +3,7 @@ This is OCaml code for the book [Implementing SSL/TLS Using Cryptography and PKI
 ---
 
 ### WARNING
- 
-The book's introduction itself says:
-
-> There isn’t any bounds-checking on buffers or verification that the input matches what’s expected, which are things that a proper library ought to be doing. I’ve omitted these things to keep this book’s (already long) page count under control, as well as to avoid obscuring the purpose of the example code with hundreds of lines of error checking.
-
-Note that my OCaml code has even less error checking than the book -- I skip all the tedious error checking because it does not have educational value.
-
+OCaml has **31 bit** integers, lest you get mindfucked (especially in hash functions).
 
 ---
 
@@ -54,4 +48,4 @@ Elliptic Curves are amazing. There are several properties of the cyclic group fo
 
 --- 
 
-Read the protocol specification, and felt it was pointless coding the protocols as it is mostly glue code. Decided not to continue further.
+Read the protocol specification, and felt it was pointless coding the protocol as it is mostly glue code. Decided not to continue further. 
